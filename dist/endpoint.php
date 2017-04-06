@@ -7,12 +7,12 @@
 	include_once("classes/response.php");
 
 	include_once("classes/tasks/checkinfiles.php");
+	include_once("classes/tasks/howManyCheckedOutFiles.php");
 
 
 	// authenticate and create $user:
 	$a = new authenticate();
-	$user = $a->login("alexa", "alexa");
-
+	$user = $a->login("alexa", "password");
 
 	// send JSON response to Alexa:
 	$r = new response();
@@ -22,32 +22,22 @@
 	$rawJSON = file_get_contents('php://input');
 	$EchoReqObj = json_decode($rawJSON);
 
-	$intentType;
-	if (is_object($EchoReqObj) === false){
-		$intentType = "CheckInFiles";
-	}else{
-		$intentType = $EchoReqObj->request->intent->name;
-	}
+	$intentType = ( is_object($EchoReqObj) === false ) ? "HowManyCheckedOutFiles" : $EchoReqObj->request->intent->name;
 
 	// intent
-	if ($intentType="CheckInFiles"){
-		$t = new checkInFiles($user);
-		$r->returnText($t->getResponse());
-	}else{
-		$r->returnText("Sorry, I didn't understand the intent ''.");
+	switch($intentType) {
+		case "CheckInFiles":
+			$t = new checkInFiles($user);
+			$r->returnText($t->getResponse());
+			break;
+		case "HowManyCheckedOutFiles":
+			$t = new howManyCheckedOutFiles($user);
+			$r->returnText($t->getResponse());
+			//$r->returnText("HowManyCheckedOutFiles");
+			break;
+		default:
+			$r->returnText("Sorry, I didn't understand the intent '" . $intentType ."'.");
 	}
-	//var_dump($t);
 
-
-	//var_dump($_REQUEST);
-
-	//$rawJSON = file_get_contents('php://input');
-	//$EchoReqObj = json_decode($rawJSON);
-
-	//$r->returnText( $_SERVER['REQUEST_METHOD'] );	// returns POST
-	//$r->returnText( $_SERVER['REQUEST_URI'] );		// returns "/hack/endpoint.php"
-	//$r->returnText($intentType);
-
-	//);	
 
 ?>

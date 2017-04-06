@@ -7,20 +7,37 @@
 	include_once("classes/response.php");
 
 	include_once("classes/tasks/checkinfiles.php");
+	include_once("classes/tasks/howManyCheckedOutFiles.php");
 
 
 	// authenticate and create $user:
 	$a = new authenticate();
 	$user = $a->login("alexa", "password");
 
-
-	// task:
-	$t = new checkInFiles($user);
-
-	//var_dump($t);
-
 	// send JSON response to Alexa:
 	$r = new response();
-	$r->returnText($t->getResponse());	
+
+	// get intent
+	// refernce: https://gist.github.com/solariz/a7b7b09e46303223523bba2b66b9b341
+	$rawJSON = file_get_contents('php://input');
+	$EchoReqObj = json_decode($rawJSON);
+
+	$intentType = ( is_object($EchoReqObj) === false ) ? "unknown" : $EchoReqObj->request->intent->name;
+
+	// intent
+	switch($intentType) {
+		case "CheckInFiles":
+			$t = new checkInFiles($user);
+			$r->returnText($t->getResponse());
+			break;
+		case "HowManyCheckedOutFiles":
+			$t = new howManyCheckedOutFiles($user);
+			$r->returnText($t->getResponse());
+			//$r->returnText("HowManyCheckedOutFiles");
+			break;
+		default:
+			$r->returnText("Sorry, I didn't understand the intent '" . $intentType ."'.");
+	}
+
 
 ?>

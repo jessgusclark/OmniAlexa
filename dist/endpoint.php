@@ -22,7 +22,7 @@
 	$rawJSON = file_get_contents('php://input');
 	$EchoReqObj = json_decode($rawJSON);
 
-	$intentType = ( is_object($EchoReqObj) === false ) ? "HowManyCheckedOutFiles" : $EchoReqObj->request->intent->name;
+	$intentType = ( is_object($EchoReqObj) === false ) ? "unknown" : $EchoReqObj->request->intent->name;
 
 	// intent
 	switch($intentType) {

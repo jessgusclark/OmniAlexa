@@ -6,11 +6,8 @@
 	include_once("classes/curl.php");
 	include_once("classes/response.php");
 
-	include_once("classes/tasks/checkinfiles.php");
-	include_once("classes/tasks/howManyCheckedOutFiles.php");
 
-
-	// authenticate and create $user:
+	// authenticate and create $user variable:
 	$a = new authenticate();
 	$user = $a->login("alexa", "password");
 
@@ -22,22 +19,16 @@
 	$rawJSON = file_get_contents('php://input');
 	$EchoReqObj = json_decode($rawJSON);
 
-	$intentType = ( is_object($EchoReqObj) === false ) ? "unknown" : $EchoReqObj->request->intent->name;
+	// if intent is not set. i.e. you go to the page via http
+	$intent = ( is_object($EchoReqObj) === false ) ? "howManyCheckedOutFiles" : $EchoReqObj->request->intent->name;
 
-	// intent
-	switch($intentType) {
-		case "CheckInFiles":
-			$t = new checkInFiles($user);
-			$r->returnText($t->getResponse());
-			break;
-		case "HowManyCheckedOutFiles":
-			$t = new howManyCheckedOutFiles($user);
-			$r->returnText($t->getResponse());
-			//$r->returnText("HowManyCheckedOutFiles");
-			break;
-		default:
-			$r->returnText("Sorry, I didn't understand the intent '" . $intentType ."'.");
-	}
+	// include task class:
+	include_once("classes/tasks/" . $intent . ".php");
 
+	// call class based on intent:
+	$task = new $intent($user);
+
+	// return JSON:
+	$r->returnText($task->getResponse());
 
 ?>

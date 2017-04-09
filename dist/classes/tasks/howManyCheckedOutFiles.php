@@ -2,34 +2,22 @@
 
 class howManyCheckedOutFiles{
 
-	private $user;
 	private $filecount;
 
-	function __construct($u) {
-		$this->user = $u;
+	function __construct($user) {
+		// include API calls:
+		include_once("classes/api-calls/files.php");
 
-		$files = $this->getCheckedOutFiles();
+		// create api object and get data:
+		$apiFiles = new files();
+		$files = $apiFiles->getCheckedOutFiles($user, "outc17");
 
+		// assign any local variables needed for getResponse:
 		$this->filecount = count($files);
 
 	}
 
-	private function getCheckedOutFiles(){
-
-		$c = new curl();
-
-		$url = "https://a.cms.omniupdate.com/files/checkedout";
-
-		$data = array(
-			"authorization_token" => $this->user->gadget_token,
-			"site" => "outc17",
-			"all" => "false"
-		);
-
-		return $c->get($url, $data);
-
-	}
-
+	// Required for Output back to Alexa
 	public function getResponse(){
 		return "You have " . $this->filecount . " files checked out.";
 	}

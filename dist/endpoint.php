@@ -20,7 +20,7 @@
 	$EchoReqObj = json_decode($rawJSON);
 
 	// if intent is not set. i.e. you go to the page via http
-	$intent = ( is_object($EchoReqObj) === false ) ? "howManyCheckedOutFiles" : $EchoReqObj->request->intent->name;
+	$intent = ( is_object($EchoReqObj) === false ) ? "checkInFiles" : $EchoReqObj->request->intent->name;
 
 	// include task class:
 	include_once("classes/tasks/" . $intent . ".php");

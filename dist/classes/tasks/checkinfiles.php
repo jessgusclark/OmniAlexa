@@ -2,57 +2,21 @@
 
 class checkInFiles{
 
-	private $user;
 	private $filecount;
 
-	function __construct($u) {
-		$this->user = $u;
+	function __construct($user) {
+		// include API calls:
+		include_once("classes/api-calls/files.php");
 
-		$files = $this->getCheckedOutFiles();
-
-		$this->loopThroughFiles($files);
-
-	}
-
-	private function getCheckedOutFiles(){
-
-		$c = new curl();
-
-		$url = "https://a.cms.omniupdate.com/files/checkedout";
-
-		$data = array(
-			"authorization_token" => $this->user->gadget_token,
-			"site" => "outc17",
-			"all" => "false"
-		);
-
-		return $c->get($url, $data);
-
-	}
-
-	private function loopThroughFiles($files){
+		// create api object and get data:
+		$apiFiles = new files();
+		$files = $apiFiles->getCheckedOutFiles($user, "outc17");
 		$this->filecount = count($files);
 
+		// loop through files and check them back in: 
 		foreach ($files as $file) {
-			$this->checkInFile($file->path);
+			$files = $apiFiles->checkInFile($user, 'outc17', $file);
 		}
-
-
-	}
-
-	private function checkInFile($file){
-
-		$c = new curl();
-
-		$url = "https://a.cms.omniupdate.com/files/checkin";
-
-		$data = array(
-			"authorization_token" => $this->user->gadget_token,
-			"site" => "outc17",
-			"path" => $file
-		);
-
-		return $c->post($url, $data);
 
 	}
 

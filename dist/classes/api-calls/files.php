@@ -9,7 +9,7 @@ class files {
 	///			 all is set to true.
 	/// Omni Reference: http://developers.omniupdate.com/#!/Files/get_files_checkedout
 	public function getCheckedOutFiles($user, $site, $all = false){
-		
+
 		$c = new curl();
 
 		$url = "https://a.cms.omniupdate.com/files/checkedout";
@@ -24,6 +24,25 @@ class files {
 
 	}
 
+	/// Check in Single File;
+	/// Takes: $user (array), $fileObject (array)
+	/// Returns: Checks back in the file that is being passed.
+	/// Omni Reference: http://developers.omniupdate.com/#!/Files/post_files_checkin
+	public function checkInFile($user, $site, $file){
+
+		$c = new curl();
+
+		$url = "https://a.cms.omniupdate.com/files/checkin";
+
+		$data = array(
+			"authorization_token" => $user->gadget_token,
+			"site" => $file->site,
+			"path" => $file->path
+		);
+
+		return $c->post($url, $data);
+
+	}
 
 }
 

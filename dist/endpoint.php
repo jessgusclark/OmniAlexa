@@ -2,14 +2,16 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', '1');
 	
-	include_once("classes/authenticate.php");
+	include_once("classes/constants.php");
+
+	include_once("classes/api-calls/authenticate.php");
 	include_once("classes/curl.php");
 	include_once("classes/response.php");
 
 
-	// authenticate and create $user variable:
+	// authenticate with values from constatns.php. Returns an array $user with user's info:
 	$a = new authenticate();
-	$user = $a->login("alexa", "password");
+	$user = $a->login(SKIN, ACCOUNT, USERNAME, PASSWORD);
 
 	// send JSON response to Alexa:
 	$r = new response();

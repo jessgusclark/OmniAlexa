@@ -19,8 +19,16 @@ class authenticate{
 			'password' => $password
 		);
 
-		return $c->post($url, $data);
+		$user =  $c->post($url, $data);
 
+		// If error logging in, return error and stop running
+		if (isset($user->error)){
+			$r = new response();
+			$r->returnText("Authentication Error: " . $user->error);
+			die();
+		}
+
+		return $user;
 	}
 
 

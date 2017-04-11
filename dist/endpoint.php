@@ -39,4 +39,6 @@
 	// return JSON:
 	$r->returnText($task->getResponse());
 
+	// logout:
+	$a->logout();
 ?>

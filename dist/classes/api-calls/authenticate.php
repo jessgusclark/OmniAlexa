@@ -31,6 +31,21 @@ class authenticate{
 		return $user;
 	}
 
+	/// Log User Out
+	/// Takes: nothing
+	/// Returns: nothing
+	/// Reference: http://developers.omniupdate.com/#!/Authentication/post_authentication_logout
+	public function logout(){
+		$c = new curl();
+
+		$url = "https://a.cms.omniupdate.com/authentication/logout";
+
+		$data = array();
+
+		$user =  $c->post($url, $data);
+
+	}
+
 
 }
 

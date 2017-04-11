@@ -22,7 +22,13 @@
 	$EchoReqObj = json_decode($rawJSON);
 
 	// if intent is not set. i.e. you go to the page via http
-	$intent = ( is_object($EchoReqObj) === false ) ? "checkInFiles" : $EchoReqObj->request->intent->name;
+	$intent = ( is_object($EchoReqObj) === false ) ? "unknown" : $EchoReqObj->request->intent->name;
+
+	// abort if the code for the intent can not be found
+	if (!file_exists("classes/tasks/" . $intent . ".php")){
+		$r->returnText("The intent '" . $intent . "' could not be found.");
+		die();
+	}
 
 	// include task class:
 	include_once("classes/tasks/" . $intent . ".php");
